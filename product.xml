@@ -1,0 +1,49 @@
+﻿<!-- Directory structure: 
+		Asp.Net_runtime_8.0.3_x64\product.xml
+		Asp.Net_runtime_8.0.3_x64\NetCoreCheck.exe
+		Asp.Net_runtime_8.0.3_x64\en\package.xml 
+Copy this structure into c:\Program Files (x86)\Microsoft SDKs\ClickOnce Bootstrapper\Packages -->
+
+<!-- A unique ProductCode is needed, this value will be displayed at the prerequisite list. -->
+<Product xmlns="http://schemas.microsoft.com/developer/2004/01/bootstrapper" ProductCode="Microsoft.AspNetCore.Runtime.8.0.3.x64">
+
+  <!-- Defines list of files to be copied on build -->
+  <PackageFiles CopyAllPackageFiles="false">
+    <!-- New link for HomeSite: "https://dotnet.microsoft.com/en-us/download" / "All .Net 8.0 versions" / "ASP.NET Core Runtime 8.0.3, Windows x64" / "Direct link, Copy"
+    You do not have to set the PublicKey but if you do then select the steps from https://foxlearn.com/articles/adding-custom-prerequisites-to-visual-studio-setup-project-468.html -->
+    <PackageFile Name="aspnetcore-runtime-8.0.3-win-x64.exe"
+                 HomeSite="https://download.visualstudio.microsoft.com/download/pr/e91876a9-1760-42cb-a6f4-97c57e9cca52/b433fcf4768929539f17e1908cb315bf/aspnetcore-runtime-8.0.3-win-x64.exe"
+                 PublicKey="0" />
+     <!-- You can fin NetCoreCheck.exe at <VS install directory>\MSBuild\Microsoft\VisualStudio\BootstrapperPackages\net7coreruntime_x64  -->
+    <PackageFile Name="NetCoreCheck.exe" />
+  </PackageFiles>
+
+  <!-- Run the NetCoreCheck tool that will determine if the necessary framework is installed -->
+  <InstallChecks>
+    <!-- Useage of NetCoreCheck: https://github.com/dotnet/deployment-tools/issues/84 -->
+    <ExternalCheck Property="NetCoreCheck" PackageFile="NetCoreCheck.exe" Arguments="Microsoft.AspNetCore.App 8.0.3"/>
+  </InstallChecks>
+
+  <!-- Defines how to invoke the setup for the Asp.NET Runtime 7.0 -->
+  <Commands Reboot="Defer">
+    <Command PackageFile="aspnetcore-runtime-8.0.3-win-x64.exe" Arguments=' /q '>
+
+      <!-- These checks determine whether the package is to be installed -->
+      <InstallConditions>
+        <!-- Block install on less than Windows 7 RTM -->
+        <FailIf Property="VersionNT" Compare="VersionLessThan" Value="6.1.0" String="InvalidPlatformWinNT"/>
+        <!-- NetCoreCheck returning 0 means the runtime is already installed -->
+        <BypassIf Property="NetCoreCheck" Compare="ValueEqualTo" Value="0"/>
+        <!-- Block install if user does not have admin privileges -->
+        <FailIf Property="AdminUser" Compare="ValueEqualTo" Value="false" String="AdminRequired"/>
+      </InstallConditions>
+
+      <ExitCodes>
+        <ExitCode Value="0" Result="Success"/>
+        <ExitCode Value="3010" Result="SuccessReboot"/>
+        <DefaultExitCode Result="Fail" FormatMessageFromSystem="true" String="GeneralFailure" />
+      </ExitCodes>
+
+    </Command>
+  </Commands>
+</Product>
