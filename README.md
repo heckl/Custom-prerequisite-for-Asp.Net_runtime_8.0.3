@@ -1,4 +1,4 @@
-ClickOnce does not have prerequisite for asp.netcore.
+ClickOnce does not have prerequisite for asp.net runtime 8.03.
 
 https://stackoverflow.com/questions/74142462/clickonce-prerequisite-for-asp-net-core-runtime-6-0-10-x64
 
