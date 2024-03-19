@@ -1,7 +1,9 @@
-ClickOnce does not have prerequisite for asp.netcore
+ClickOnce does not have prerequisite for asp.netcore.
 
 https://stackoverflow.com/questions/74142462/clickonce-prerequisite-for-asp-net-core-runtime-6-0-10-x64
 
+
+Add the prerequisite for VS:
 
 - create a directory structure
   - Asp.Net_runtime_8.0.3_x64\product.xml
